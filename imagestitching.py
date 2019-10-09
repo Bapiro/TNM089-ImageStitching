@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 from random import randrange
-from skimage.transform import match_histograms
+# from skimage.transform import match_histograms
 from sklearn.cluster import KMeans
 import image_hist
 import random
@@ -58,23 +58,23 @@ dst = cv2.warpPerspective(
 plt.subplot(122), plt.imshow(dst), plt.title('Warped Image')
 plt.show()
 plt.figure()
-# dst[0:img.shape[0], 0:img.shape[1]] = img_output2
+#dst[0:img.shape[0], 0:img.shape[1]] = img_output2
 
 
 # Taking random pixel from left/right image in a 20px width
 startLength = img.shape[1]-20
-dst[0:img.shape[1], 0:startLength] = img_output2[0:img.shape[1], 0:startLength]
+dst[0:img.shape[0], 0:startLength] = img_output2[0:img.shape[0], 0:startLength]
 rnd = 0
 for x in range(startLength, img.shape[1]):
     for y in range(img.shape[0]):
         rnd = random.randrange(0, 2)
         if(rnd == 1):
             dst[y, x] = img_output2[y, x]
-            print(1)
-        else:
-            print(0)
+            #print(1)
+        #else:
+            #print(0)
 
-print(img.shape[1])
+print(img.shape[0])
 # blurred_img = cv2.medianBlur(dst, 3)
 # blurred_img = cv2.GaussianBlur(dst, (21, 1), 0)
 # blurred_img = cv2.blur(img, (5, 5))

@@ -6,10 +6,12 @@ from random import randrange
 from sklearn.cluster import KMeans
 import image_hist
 import random
+import math
+
 
 # Convert images to greyscale
-img_ = cv2.imread('./Images/right.JPG')
-img = cv2.imread('./Images/left.JPG')
+img_ = cv2.imread('./Images/right2.JPG')
+img = cv2.imread('./Images/left2.JPG')
 
 
 img1 = cv2.cvtColor(img_, cv2.COLOR_BGR2GRAY)
@@ -49,8 +51,6 @@ img_output = np.uint8(image_hist.hist_match(img_, img))
 
 img_output2 = img
 
-print(img_output2)
-
 
 # Stitching
 dst = cv2.warpPerspective(
@@ -58,31 +58,49 @@ dst = cv2.warpPerspective(
 plt.subplot(122), plt.imshow(dst), plt.title('Warped Image')
 plt.show()
 plt.figure()
-#dst[0:img.shape[0], 0:img.shape[1]] = img_output2
+# dst[0:img.shape[0], 0:img.shape[1]] = img_output2
 
-
+plt.imshow(dst)
+plt.show()
+seamWitdh = 40
 # Taking random pixel from left/right image in a 20px width
-startLength = img.shape[1]-20
+startLength = img.shape[1]-seamWitdh
 dst[0:img.shape[0], 0:startLength] = img_output2[0:img.shape[0], 0:startLength]
+plt.imshow(dst)
+plt.show()
 rnd = 0
+weightLeft = 1
+weightRight = 0.0
+step = 1/seamWitdh
 for x in range(startLength, img.shape[1]):
+    print(weightRight)
     for y in range(img.shape[0]):
-        rnd = random.randrange(0, 2)
-        if(rnd == 1):
-            dst[y, x] = img_output2[y, x]
-            #print(1)
-        #else:
-            #print(0)
+        dst[y, x, 0] = (math.sqrt(
+            ((weightLeft*(int(img_output2[y, x, 0])**2))+(weightRight*(int(dst[y, x, 0])**2)))))
+        dst[y, x, 1] = (math.sqrt(
+            ((weightLeft*(int(img_output2[y, x, 1])**2))+(weightRight*(int(dst[y, x, 1])**2)))))
+        dst[y, x, 2] = (math.sqrt(
+            ((weightLeft*(int(img_output2[y, x, 2])**2))+(weightRight*(int(dst[y, x, 2])**2)))))
+        #rnd = random.randrange(0, 2)
+        # if(rnd == 1):
+        # dst[y, x] = img_output2[y, x]
+        # print(1)
+        # else:
+        # print(0)
 
-print(img.shape[0])
+    weightRight += step
+    weightLeft = 1-weightRight
+
+
 # blurred_img = cv2.medianBlur(dst, 3)
-# blurred_img = cv2.GaussianBlur(dst, (21, 1), 0)
-# blurred_img = cv2.blur(img, (5, 5))
-# mask = np.zeros(dst.shape, "uint8")
-# mask = cv2.rectangle(mask, (img.shape[1]-30, 0), (img.shape[1]+30, img.shape[0]), (255, 255, 255), -1)
+# blurred_img = cv2.GaussianBlur(dst, (5, 1), 0)
+blurred_img = cv2.bilateralFilter(dst, 5, 35, 35)
+mask = np.zeros(dst.shape, "uint8")
+mask = cv2.rectangle(
+    mask, (img.shape[1]-25, 0), (img.shape[1], img.shape[0]), (255, 255, 255), -1)
 
 
-# out = np.where(mask == (0, 0, 0), dst, blurred_img)
+out = np.where(mask == (0, 0, 0), dst, blurred_img)
 
 cv2.imwrite('output.jpg', dst)
 plt.imshow(dst)

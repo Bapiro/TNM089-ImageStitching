@@ -1,9 +1,10 @@
 import numpy as np
+from matplotlib import pyplot as plt
 
 
 def hist_match(source, template):
     """
-    Adjust the pixel values of a grayscale image such that its histogram
+    Adjust the pixel values of a image such that its histogram
     matches that of a target image
 
     Arguments:
@@ -35,7 +36,9 @@ def hist_match(source, template):
     s_quantiles /= s_quantiles[-1]
     t_quantiles = np.cumsum(t_counts).astype(np.float64)
     t_quantiles /= t_quantiles[-1]
-
+    # plt.hist(s_quantiles, bins)
+    # plt.title("histogram")
+    # plt.show()
     # interpolate linearly to find the pixel values in the template image
     # that correspond most closely to the quantiles in the source image
     interp_t_values = np.interp(s_quantiles, t_quantiles, t_values)

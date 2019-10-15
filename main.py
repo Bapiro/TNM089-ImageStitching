@@ -6,7 +6,7 @@ import imagestitching
 import image_hist
 
 images = [
-    #cv2.cvtColor(cv2.imread('./Images/right.jpg'), cv2.COLOR_BGR2GRAY), 
+    #cv2.cvtColor(cv2.imread('./Images/right.jpg'), cv2.COLOR_BGR2GRAY),
     #cv2.cvtColor(cv2.imread('./Images/left.jpg'), cv2.COLOR_BGR2GRAY)
     cv2.imread('./Images/multipleTest1.jpg'),
     cv2.imread('./Images/multipleTest2.jpg'),
@@ -28,13 +28,12 @@ for img in images[1:]:
     images[counter] = np.uint8(image_hist.hist_match(img, images[0]))
 
 
-
 # Stitch the images together
 for img in images[1:]:
     finalimg = imagestitching.stitching(finalimg, img)
     imgList.append(finalimg)
 
-#print(len(imgList))
+# print(len(imgList))
 
 
 plt.subplot(122), plt.imshow(imgList[0]), plt.title('img 1')
@@ -45,15 +44,5 @@ plt.subplot(122), plt.imshow(imgList[1]), plt.title('img 2')
 plt.show()
 plt.figure()
 
-plt.subplot(122), plt.imshow(imgList[2]), plt.title('img 3')
-plt.show()
-plt.figure()
 
-plt.subplot(122), plt.imshow(imgList[3]), plt.title('Warped Image')
-plt.show()
-plt.figure()
-
-
-cv2.imwrite('test.jpg', finalimg) 
-
-    
+cv2.imwrite('test.jpg', finalimg)

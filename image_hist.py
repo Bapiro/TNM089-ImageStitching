@@ -36,11 +36,12 @@ def hist_match(source, template):
     s_quantiles /= s_quantiles[-1]
     t_quantiles = np.cumsum(t_counts).astype(np.float64)
     t_quantiles /= t_quantiles[-1]
-    # plt.hist(s_quantiles, bins)
-    # plt.title("histogram")
-    # plt.show()
+
     # interpolate linearly to find the pixel values in the template image
     # that correspond most closely to the quantiles in the source image
     interp_t_values = np.interp(s_quantiles, t_quantiles, t_values)
-
+    #plt.hist(interp_t_values[bin_idx], s_values)
+    # plt.title("histogram")
+    # plt.show()
+    # print(interp_t_values[bin_idx].reshape(oldshape))
     return interp_t_values[bin_idx].reshape(oldshape)
